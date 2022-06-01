@@ -1,39 +1,37 @@
 import './css/styles.css';
+import debounce from 'lodash.debounce';
+import Notiflix from 'notiflix';
 
-
-const debounce = require('lodash.debounce');
-// import {fetchCountries} from './fetchCountries'/
+import { fetchCountries } from './fetchCountries.js';
+import { renderCountries } from './renderCountries.js';
 
 const DEBOUNCE_DELAY = 300;
 
 const input = document.querySelector('input#search-box');
 
-function fetchCountries(name){
-    fetch(`https://restcountries.com/v3.1/name/${name}?fields=capital,name,population,flags,languages`)
-    .then(response => response.json())
-    .then(countrie => {
-        console.log(countrie);
-        const mercup = mercupList(countrie)
-        console.log(mercup);
-    })
-}
+input.addEventListener('input', debounce(event => {
+    inputCountry(event);
+    }, DEBOUNCE_DELAY),
+  );
 
-input.addEventListener('input', debounce((evt) => {
-    if(evt.target.value === ""){
-        // придумать очистку
-        return
+function inputCountry(event) {
+    const inputText = event.target.value.trim('');
+    if (inputText === '') {
+      renderCountries(textInput);
+      return;
     }
-    fetchCountries(evt.target.value);
-}, DEBOUNCE_DELAY) )
+    console.log(inputText);
 
-// fetchCountries('ukraine');
+    return fetchCountries(inputText)
+      .then(data => {
+        if (data.length > 10) {
+          Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
+        }
+        renderCountries(data);
+      })
+      .catch(error => {
+        Notiflix.Notify.failure('Oops, there is no country with that name');
+        renderCountries('');
+      });
+  }
 
-
-
-function mercupList(countries){
-    countries.map(({flags, name}) => {
-    return `<li>
-    <img src="${flags.svg}" alt="${name.official}" width="60px" height="60px"/>
-    <p>${name.official}</p>
-    </li>`})
-}

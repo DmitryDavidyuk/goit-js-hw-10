@@ -18,3 +18,24 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+
+ul {
+  padding: 0;
+}
+li {
+  list-style: none;
+  background-color: rgb(255, 255, 255);
+  margin-bottom: 2px;
+  padding-left: 5px;
+}
+.name {
+  font-weight: bold;
+  font-size: 30px;
+}
+img {
+  margin-right: 10px;
+}
+span {
+  font-weight: bold;
+  margin-right: 5px;
+}
